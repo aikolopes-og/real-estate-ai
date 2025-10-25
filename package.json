@@ -1,0 +1,27 @@
+{
+  "name": "real-estate-platform",
+  "version": "1.0.0",
+  "description": "Real Estate Platform - Full Stack Application",
+  "private": true,
+  "scripts": {
+    "dev": "powershell -ExecutionPolicy Bypass -File ./start-dev.ps1",
+    "start": "powershell -ExecutionPolicy Bypass -File ./start-dev.ps1",
+    "stop": "powershell -ExecutionPolicy Bypass -File ./stop-dev.ps1",
+    "status": "powershell -Command \"Get-Process node -ErrorAction SilentlyContinue | Select-Object Id, ProcessName, Path | Format-Table\"",
+    "logs:backend": "powershell -Command \"Get-Content ./backend/logs/backend-out.log -Tail 50 -Wait\"",
+    "logs:frontend": "powershell -Command \"Get-Content ./main-app/logs/frontend-out.log -Tail 50 -Wait\"",
+    "setup": "npm install --prefix backend && npm install --prefix main-app && cd backend && npx prisma generate && npx prisma migrate deploy",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "lint": "npm run lint --prefix backend && npm run lint --prefix main-app",
+    "lint:fix": "npm run lint:fix --prefix backend"
+  },
+  "keywords": [
+    "real-estate",
+    "property-management",
+    "full-stack"
+  ],
+  "author": "Real Estate Platform Team",
+  "license": "UNLICENSED"
+}

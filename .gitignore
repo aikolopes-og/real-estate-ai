@@ -1,0 +1,199 @@
+# Dependencies# Dependencies
+
+node_modules/node_modules/
+
+npm-debug.log*npm-debug.log*
+
+yarn-debug.log*yarn-debug.log*
+
+yarn-error.log*yarn-error.log*
+
+
+
+# Next.js# Next.js
+
+.next/.next/
+
+out/out/
+
+build/build/
+
+dist/dist/
+
+
+
+# Environment Variables# Environment Variables
+
+.env.env
+
+.env.local.env.local
+
+.env.development.local.env.development.local
+
+.env.test.local.env.test.local
+
+.env.production.local.env.production.local
+
+
+
+# Logs# Firebase
+
+logs.firebase/
+
+*.logfirebase-debug.log
+
+firestore-debug.log
+
+# Databaseui-debug.log
+
+*.db
+
+*.sqlite# Python
+
+__pycache__/
+
+# Backup files*.py[cod]
+
+*.bak*$py.class
+
+*.backup*.so
+
+.Python
+
+# Temporary filesenv/
+
+*.tmpvenv/
+
+*.tempENV/
+
+.venv/
+
+# Test files
+
+test-results/# IDEs
+
+coverage/.vscode/
+
+.idea/
+
+# TypeScript build artifacts*.swp
+
+*.tsbuildinfo*.swo
+
+*~
+
+# Editor artifacts
+
+.vscode/# OS
+
+.idea/.DS_Store
+
+*.swp.DS_Store?
+
+*.swo._*
+
+*~.Spotlight-V100
+
+.Trashes
+
+# OSehthumbs.db
+
+.DS_StoreThumbs.db
+
+Thumbs.db
+
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# nyc test coverage
+.nyc_output
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# Database
+*.db
+*.sqlite
+
+# Backup files
+*.bak
+*.backup
+BACKUP-*.md
+RESUMO-*.md
+CHECKPOINT-*.md
+
+# Temporary files
+*.tmp
+*.temp
+
+# Firebase config with secrets
+firebase-config-private.js
+serviceAccountKey.json
+
+# ML Models
+*.pkl
+*.model
+models/trained/
+
+# Data files
+data/raw/
+data/processed/
+*.csv
+*.json
+!package.json
+!package-lock.json
+
+# Test files
+test-results/
+coverage/
+.nyc_output/
+
+# Local development
+.local/
+local/
+
+# TypeScript build artifacts
+*.tsbuildinfo
+
+# Turbopack cache
+.turbo/
+
+# Prisma
+prisma/migrations/dev.db
+prisma/dev.db
+
+# Editor artifacts
+*.swp
+*.swo
+*~
+.history/
+
+# Outdated/temporary files
+check-system.js
+smart-manager.ps1
+start-frontend.bat
+CONFIGURATION_SUMMARY.md
+SYSTEM_ANALYSIS.md

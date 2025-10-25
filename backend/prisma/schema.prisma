@@ -1,0 +1,333 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String          @id @default(cuid())
+  email           String          @unique
+  password        String
+  role            UserRole        @default(USER)
+  firstName       String
+  lastName        String
+  phone           String?
+  avatar          String?
+  isVerified      Boolean         @default(false)
+  creci           String?
+  yearsExperience Int?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  brokerRole      BrokerRole?
+  companyMembers  CompanyMember[]
+  favorites       Favorite[]
+  interactions    Interaction[]
+  assignedLeads   Lead[]          @relation("AssignedLeads")
+  properties      Property[]
+  propertyViews   PropertyView[]
+  refreshTokens   RefreshToken[]
+  savedSearches   SavedSearch[]
+  viewHistory     ViewHistory[]
+
+  @@map("users")
+}
+
+model Company {
+  id            String          @id @default(cuid())
+  name          String
+  type          CompanyType
+  licenseNumber String          @unique
+  email         String
+  phone         String
+  address       String
+  city          String?
+  state         String?
+  zipCode       String?
+  website       String?
+  logo          String?
+  description   String?
+  isVerified    Boolean         @default(false)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  members       CompanyMember[]
+  properties    Property[]
+
+  @@map("companies")
+}
+
+model CompanyMember {
+  id        String     @id @default(cuid())
+  userId    String
+  companyId String
+  role      BrokerRole
+  joinedAt  DateTime   @default(now())
+  company   Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, companyId])
+  @@map("company_members")
+}
+
+model Property {
+  id             String         @id @default(cuid())
+  title          String
+  description    String
+  propertyType   PropertyType
+  status         PropertyStatus @default(AVAILABLE)
+  price          Float
+  priceType      PriceType      @default(SALE)
+  bedrooms       Int
+  bathrooms      Int
+  area           Float
+  parkingSpaces  Int            @default(0)
+  address        String
+  city           String
+  state          String
+  zipCode        String
+  country        String         @default("Brasil")
+  latitude       Float?
+  longitude      Float?
+  images         String[]
+  virtualTourUrl String?
+  amenities      String[]
+  ownerId        String
+  companyId      String?
+  views          Int            @default(0)
+  favorites      Int            @default(0)
+  rating         Float?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  favoriteUsers  Favorite[]
+  inquiries      Inquiry[]
+  leads          Lead[]
+  company        Company?       @relation(fields: [companyId], references: [id])
+  owner          User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  propertyViews  PropertyView[]
+  viewHistory    ViewHistory[]
+
+  @@map("properties")
+}
+
+model Favorite {
+  id         String   @id @default(cuid())
+  userId     String
+  propertyId String
+  createdAt  DateTime @default(now())
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, propertyId])
+  @@map("favorites")
+}
+
+model ViewHistory {
+  id         String   @id @default(cuid())
+  userId     String
+  propertyId String
+  viewedAt   DateTime @default(now())
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("view_history")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
+}
+
+model Lead {
+  id                 String         @id @default(cuid())
+  firstName          String
+  lastName           String
+  email              String
+  phone              String?
+  message            String?
+  source             LeadSource     @default(WEBSITE)
+  status             LeadStatus     @default(NEW)
+  priority           Priority       @default(MEDIUM)
+  budget             Float?
+  propertyTypes      PropertyType[]
+  preferredLocations String[]
+  assignedToId       String?
+  propertyId         String?
+  lastContactAt      DateTime?
+  nextFollowUp       DateTime?
+  notes              String?
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  inquiries          Inquiry[]
+  interactions       Interaction[]
+  assignedTo         User?          @relation("AssignedLeads", fields: [assignedToId], references: [id])
+  property           Property?      @relation(fields: [propertyId], references: [id])
+
+  @@map("leads")
+}
+
+model Inquiry {
+  id          String        @id @default(cuid())
+  leadId      String
+  propertyId  String
+  type        InquiryType
+  message     String?
+  status      InquiryStatus @default(PENDING)
+  scheduledAt DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  lead        Lead          @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  property    Property      @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@map("inquiries")
+}
+
+model Interaction {
+  id          String            @id @default(cuid())
+  leadId      String
+  agentId     String
+  type        InteractionType
+  subject     String?
+  content     String
+  scheduledAt DateTime?
+  completedAt DateTime?
+  status      InteractionStatus @default(PENDING)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  agent       User              @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  lead        Lead              @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@map("interactions")
+}
+
+model SavedSearch {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  criteria    Json
+  emailAlerts Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("saved_searches")
+}
+
+model PropertyView {
+  id         String   @id @default(cuid())
+  propertyId String
+  userId     String?
+  ipAddress  String?
+  userAgent  String?
+  viewedAt   DateTime @default(now())
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  user       User?    @relation(fields: [userId], references: [id])
+
+  @@map("property_views")
+}
+
+enum UserRole {
+  USER
+  BROKER
+  ADMIN
+}
+
+enum BrokerRole {
+  DIRECTOR
+  AGENT
+}
+
+enum CompanyType {
+  BROKER
+}
+
+enum PropertyType {
+  APARTMENT
+  HOUSE
+}
+
+enum PropertyStatus {
+  AVAILABLE
+  RENTED
+  SOLD
+  DRAFT
+}
+
+enum PriceType {
+  SALE
+  RENT_MONTHLY
+  RENT_DAILY
+}
+
+enum LeadSource {
+  WEBSITE
+  PHONE
+  EMAIL
+  REFERRAL
+  SOCIAL_MEDIA
+  ADVERTISEMENT
+  WALK_IN
+  OTHER
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  INTERESTED
+  VIEWING_SCHEDULED
+  OFFER_MADE
+  NEGOTIATING
+  CLOSED_WON
+  CLOSED_LOST
+  DORMANT
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum InquiryType {
+  GENERAL_INFO
+  SCHEDULE_TOUR
+  PRICE_INQUIRY
+  FINANCING_HELP
+  AVAILABILITY_CHECK
+  OFFER_SUBMISSION
+}
+
+enum InquiryStatus {
+  PENDING
+  RESPONDED
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+enum InteractionType {
+  EMAIL
+  PHONE_CALL
+  SMS
+  IN_PERSON_MEETING
+  VIDEO_CALL
+  PROPERTY_TOUR
+  FOLLOW_UP
+  OFFER_DISCUSSION
+}
+
+enum InteractionStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+  RESCHEDULED
+}

@@ -1,0 +1,44 @@
+{
+  "name": "real-estate-platform-frontend",
+  "version": "1.0.0",
+  "description": "Professional Real Estate Platform - Frontend Application",
+  "private": true,
+  "author": "Real Estate Platform Team",
+  "scripts": {
+    "dev": "next dev --turbopack --port 3000",
+    "build": "next build --turbopack",
+    "start": "next start --port 3000",
+    "start:full": "node start-with-backend.js",
+    "lint": "eslint",
+    "test:e2e": "node tools/run-e2e.js",
+    "test:e2e:raw": "playwright test"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
+    "framer-motion": "^12.23.24",
+    "next": "15.5.5",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-hook-form": "^7.65.0",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.5.5",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "@playwright/test": "^1.40.0"
+  },
+  "keywords": [
+    "real-estate",
+    "property-management",
+    "nextjs",
+    "typescript",
+    "professional-platform"
+  ]
+}
