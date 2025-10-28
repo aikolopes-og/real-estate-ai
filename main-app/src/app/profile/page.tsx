@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import Image from 'next/image';
+import { SlUser, SlHome, SlSettings } from "react-icons/sl";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -43,14 +44,14 @@ export default function ProfilePage() {
   const getRoleIcon = (role?: string) => {
     switch (role) {
       case 'USER':
-        return '👤';
+        return <SlUser className="w-5 h-5" />;
       case 'BROKER':
-        return '🏢';
+        return <SlHome className="w-5 h-5" />;
 
       case 'ADMIN':
-        return '⚙️';
+        return <SlSettings className="w-5 h-5" />;
       default:
-        return '👤';
+        return <SlUser className="w-5 h-5" />;
     }
   };
 

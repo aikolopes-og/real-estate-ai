@@ -6,7 +6,6 @@ import logger from '../utils/logger'
 import multer from 'multer'
 import path from 'path'
 import fs from 'fs'
-import PropertySearchService from '../services/PropertySearchService'
 
 const router = Router()
 
@@ -83,118 +82,83 @@ router.post('/upload', authenticate, authorize('BROKER', 'ADMIN'), upload.array(
   }
 })
 
-// Get all properties - VERSÃO REFATORADA COM BUSCA ROBUSTA
+// Get all properties
 router.get('/', optionalAuth, async (req: Request, res: Response) => {
   try {
-    // Inicializar serviço de busca (lazy loading para evitar circular dependency)
-    const searchService = new PropertySearchService(prisma)
-    
-    // Extrair todos os query params
     const {
-      // Paginação
       page = '1',
-      limit = '50',
-      
-      // Preço
+      limit = '10',
+      type,
       priceMin,
       priceMax,
-      value, // Alias para priceMax (usado no frontend)
-      
-      // Tipo
-      type, // Casa/Apartamento (frontend)
-      propertyType, // HOUSE/APARTMENT (backend)
-      
-      // Localização
       city,
       state,
-      zipCode,
-      
-      // Características
       bedrooms,
-      bedroomsMin,
-      bedroomsMax,
       bathrooms,
-      bathroomsMin,
-      bathroomsMax,
-      area,
-      areaMin,
-      areaMax,
-      parkingSpaces,
-      
-      // Status
-      status,
-      priceType,
-      
-      // Ordenação
       sortBy = 'createdAt',
       sortOrder = 'desc'
     } = req.query
 
-    // Construir filtros para o serviço de busca
-    const filters: any = {
-      page: parseInt(page as string),
-      limit: parseInt(limit as string),
-      sortBy: sortBy as string,
-      sortOrder: sortOrder as string
+    const pageNum = parseInt(page as string)
+    const limitNum = parseInt(limit as string)
+    const skip = (pageNum - 1) * limitNum
+
+    const where: any = {
+      status: 'AVAILABLE'
     }
 
-    // Adicionar filtros de preço
-    if (priceMin) filters.priceMin = parseFloat(priceMin as string)
-    if (priceMax) filters.priceMax = parseFloat(priceMax as string)
-    if (value) filters.value = parseFloat(value as string)
+    if (type) where.propertyType = type
+    if (city) where.city = { contains: city as string, mode: 'insensitive' }
+    if (state) where.state = { contains: state as string, mode: 'insensitive' }
+    if (bedrooms) where.bedrooms = { gte: parseInt(bedrooms as string) }
+    if (bathrooms) where.bathrooms = { gte: parseInt(bathrooms as string) }
+    if (priceMin || priceMax) {
+      where.price = {}
+      if (priceMin) where.price.gte = parseFloat(priceMin as string)
+      if (priceMax) where.price.lte = parseFloat(priceMax as string)
+    }
 
-    // Adicionar filtros de tipo
-    if (type) filters.type = type as string
-    if (propertyType) filters.propertyType = propertyType as string
+    const [properties, total] = await Promise.all([
+      prisma.property.findMany({
+        where,
+        skip,
+        take: limitNum,
+        orderBy: { [sortBy as string]: sortOrder },
+        include: {
+          owner: {
+            select: {
+              firstName: true,
+              lastName: true,
+              email: true,
+              phone: true
+            }
+          },
+          company: {
+            select: {
+              name: true,
+              phone: true,
+              email: true
+            }
+          }
+        }
+      }),
+      prisma.property.count({ where })
+    ])
 
-    // Adicionar filtros de localização
-    if (city) filters.city = city as string
-    if (state) filters.state = state as string
-    if (zipCode) filters.zipCode = zipCode as string
-
-    // Adicionar filtros de características
-    if (bedrooms) filters.bedrooms = parseInt(bedrooms as string)
-    if (bedroomsMin) filters.bedroomsMin = parseInt(bedroomsMin as string)
-    if (bedroomsMax) filters.bedroomsMax = parseInt(bedroomsMax as string)
-    if (bathrooms) filters.bathrooms = parseInt(bathrooms as string)
-    if (bathroomsMin) filters.bathroomsMin = parseInt(bathroomsMin as string)
-    if (bathroomsMax) filters.bathroomsMax = parseInt(bathroomsMax as string)
-    if (area) filters.area = parseFloat(area as string)
-    if (areaMin) filters.areaMin = parseFloat(areaMin as string)
-    if (areaMax) filters.areaMax = parseFloat(areaMax as string)
-    if (parkingSpaces) filters.parkingSpaces = parseInt(parkingSpaces as string)
-
-    // Adicionar filtros de status
-    if (status) filters.status = status as string
-    if (priceType) filters.priceType = priceType as string
-
-    // Log da requisição
-    logger.info('GET /imoveis - Parâmetros recebidos', {
-      queryParams: req.query,
-      filters,
-      userAgent: req.headers['user-agent']
-    })
-
-    // Executar busca usando o serviço robusto
-    const result = await searchService.searchProperties(filters)
-
-    // Log de sucesso
-    logger.info('GET /imoveis - Busca concluída', {
-      found: result.properties.length,
-      total: result.pagination.total,
-      executionTime: `${result.executionTime}ms`
-    })
-
-    // Retornar resultado
     res.json({
       success: true,
-      data: result
+      data: {
+        properties,
+        pagination: {
+          page: pageNum,
+          limit: limitNum,
+          total,
+          pages: Math.ceil(total / limitNum)
+        }
+      }
     })
   } catch (error: any) {
-    logger.error('Get properties failed', { 
-      error: error.message,
-      stack: error.stack 
-    })
+    logger.error('Get properties failed', { error: error.message })
     res.status(500).json({
       success: false,
       error: 'Failed to fetch properties'

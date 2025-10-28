@@ -1,6 +1,5 @@
 import { RateLimiterMemory } from 'rate-limiter-flexible'
 import { Request, Response, NextFunction } from 'express'
-import { isSuperAdmin } from '../config/superAdmin'
 
 // Different rate limits for different endpoints
 const authLimiter = new RateLimiterMemory({
@@ -15,20 +14,11 @@ const generalLimiter = new RateLimiterMemory({
 
 export const rateLimiter = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    // Verificar se é super admin (bypass rate limiter)
-    const apiKey = req.headers['x-super-admin-key'] as string
-    const ip = req.ip || req.connection.remoteAddress
-    
-    if (isSuperAdmin(apiKey, ip)) {
-      console.log('[RATE LIMITER] Super admin bypass autorizado')
-      return next()
-    }
-    
     // Apply stricter limits to auth endpoints
     if (req.path.includes('/auth/')) {
-      await authLimiter.consume(ip || 'unknown')
+      await authLimiter.consume(req.ip || 'unknown')
     } else {
-      await generalLimiter.consume(ip || 'unknown')
+      await generalLimiter.consume(req.ip || 'unknown')
     }
     next()
   } catch (rateLimiterRes: any) {

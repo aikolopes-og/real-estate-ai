@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import Header from '@/components/Header';
+import { SlLocationPin, SlSizeFullscreen, SlHome, SlDrop, SlGrid } from "react-icons/sl";
 
 interface Property {
   id: string;
@@ -52,8 +53,9 @@ function PropertyCard({ property }: { property: Property }) {
           {property.title}
         </h3>
         
-        <p className="text-white/80 text-sm font-medium drop-shadow">
-          📍 {property.city}
+        <p className="text-white/80 text-sm font-medium drop-shadow flex items-center gap-1">
+          <SlLocationPin className="w-4 h-4" />
+          {property.city}
         </p>
         
         <div className="flex items-center justify-between">
@@ -66,17 +68,17 @@ function PropertyCard({ property }: { property: Property }) {
           <div className="flex items-center gap-4 text-white/70 text-xs">
             {property.bedrooms && (
               <span className="flex items-center gap-1">
-                🛏️ {property.bedrooms}
+                <SlHome className="w-3 h-3" /> {property.bedrooms}
               </span>
             )}
             {property.bathrooms && (
               <span className="flex items-center gap-1">
-                🚿 {property.bathrooms}
+                <SlDrop className="w-3 h-3" /> {property.bathrooms}
               </span>
             )}
             {property.area && (
               <span className="flex items-center gap-1">
-                📐 {property.area}m²
+                <SlSizeFullscreen className="w-3 h-3" /> {property.area}m²
               </span>
             )}
           </div>
@@ -228,7 +230,24 @@ export default function ImoveisPage() {
                         : 'text-white/70 hover:text-white hover:bg-white/10'
                     }`}
                   >
-                    {tipo === 'Todos' ? '🏘️ Todos' : tipo === 'Casa' ? '🏠 Casas' : '🏢 Apartamentos'}
+                    <span className="flex items-center gap-2">
+                      {tipo === 'Todos' ? (
+                        <>
+                          <SlGrid className="w-4 h-4" />
+                          Todos
+                        </>
+                      ) : tipo === 'Casa' ? (
+                        <>
+                          <SlHome className="w-4 h-4" />
+                          Casas
+                        </>
+                      ) : (
+                        <>
+                          <SlHome className="w-4 h-4" />
+                          Apartamentos
+                        </>
+                      )}
+                    </span>
                   </button>
                 ))}
               </div>

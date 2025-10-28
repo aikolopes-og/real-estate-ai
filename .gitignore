@@ -1,105 +1,53 @@
-# Dependencies# Dependencies
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-node_modules/node_modules/
+# Next.js
+.next/
+out/
+build/
+dist/
 
-npm-debug.log*npm-debug.log*
+# Environment Variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-yarn-debug.log*yarn-debug.log*
-
-yarn-error.log*yarn-error.log*
-
-
-
-# Next.js# Next.js
-
-.next/.next/
-
-out/out/
-
-build/build/
-
-dist/dist/
-
-
-
-# Environment Variables# Environment Variables
-
-.env.env
-
-.env.local.env.local
-
-.env.development.local.env.development.local
-
-.env.test.local.env.test.local
-
-.env.production.local.env.production.local
-
-
-
-# Logs# Firebase
-
-logs.firebase/
-
-*.logfirebase-debug.log
-
+# Firebase
+.firebase/
+firebase-debug.log
 firestore-debug.log
+ui-debug.log
 
-# Databaseui-debug.log
-
-*.db
-
-*.sqlite# Python
-
+# Python
 __pycache__/
-
-# Backup files*.py[cod]
-
-*.bak*$py.class
-
-*.backup*.so
-
+*.py[cod]
+*$py.class
+*.so
 .Python
-
-# Temporary filesenv/
-
-*.tmpvenv/
-
-*.tempENV/
-
+env/
+venv/
+ENV/
 .venv/
 
-# Test files
-
-test-results/# IDEs
-
-coverage/.vscode/
-
+# IDEs
+.vscode/
 .idea/
-
-# TypeScript build artifacts*.swp
-
-*.tsbuildinfo*.swo
-
+*.swp
+*.swo
 *~
 
-# Editor artifacts
-
-.vscode/# OS
-
-.idea/.DS_Store
-
-*.swp.DS_Store?
-
-*.swo._*
-
-*~.Spotlight-V100
-
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
 .Trashes
-
-# OSehthumbs.db
-
-.DS_StoreThumbs.db
-
+ehthumbs.db
 Thumbs.db
 
 # Logs

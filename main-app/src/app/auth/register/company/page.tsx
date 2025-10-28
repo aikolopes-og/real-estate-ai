@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { apiClient } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
+import { SlHome } from "react-icons/sl";
 
 export default function RegisterCompanyPage() {
   const router = useRouter();
@@ -134,7 +135,7 @@ export default function RegisterCompanyPage() {
         <div className="card-glass p-8 animate-fade-in-up">
           <div className="text-center mb-6">
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center mx-auto mb-4">
-              <span className="text-3xl">🏢</span>
+              <SlHome className="text-3xl text-white" />
             </div>
             <h1 className="text-3xl font-extrabold text-white gradient-text mb-2">
               Criar Conta de Imobiliária

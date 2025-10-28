@@ -3,6 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { SlUser, SlBriefcase, SlHome } from "react-icons/sl";
 
 export default function RegisterPage() {
   const userTypes = [
@@ -10,7 +11,7 @@ export default function RegisterPage() {
       type: 'client',
       title: 'Sou Cliente',
       description: 'Procuro imóveis para comprar ou alugar',
-      icon: '👤',
+      icon: <SlUser className="w-8 h-8" />,
       color: 'from-blue-500 to-cyan-500',
       features: ['Buscar imóveis', 'Salvar favoritos', 'Receber recomendações']
     },
@@ -18,7 +19,7 @@ export default function RegisterPage() {
       type: 'broker',
       title: 'Sou Corretor',
       description: 'Trabalho com vendas de imóveis',
-      icon: '💼',
+      icon: <SlBriefcase className="w-8 h-8" />,
       color: 'from-purple-500 to-pink-500',
       features: ['Cadastrar imóveis', 'Gerenciar anúncios', 'Atender clientes']
     },
@@ -26,7 +27,7 @@ export default function RegisterPage() {
       type: 'company',
       title: 'Sou Imobiliária',
       description: 'Represento uma empresa de construção',
-      icon: '🏢',
+      icon: <SlHome className="w-8 h-8" />,
       color: 'from-orange-500 to-red-500',
       features: ['Cadastrar empreendimentos', 'Equipe de vendas', 'Dashboard completo']
     }
@@ -60,7 +61,7 @@ export default function RegisterPage() {
             >
               <div className="card-glass p-8 hover:bg-white/20 transition-all duration-300 h-full flex flex-col">
                 <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${userType.color} flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition-transform shadow-xl`}>
-                  <span className="text-4xl">{userType.icon}</span>
+                  <span className="text-white text-4xl">{userType.icon}</span>
                 </div>
 
                 <h2 className="text-2xl font-bold text-white text-center mb-3">
